@@ -1,12 +1,27 @@
+from datetime import datetime
 while True:
     from time import sleep
-    inicial = open("Caixa.txt","r")
-    pcaixa = inicial.read()
-    print("Valor inicial do caixa R$", pcaixa)
-    inicial.close()
+    try:
+        inicial = open("Caixa.txt","x")
+        inicial.close()
+        inicial = open("Caixa.txt","w+")
+        inicial.write("0")
+        inicial.close()
+    except FileExistsError:
+        inicial = open("Caixa.txt","r+")
+        pcaixa = inicial.read()
+        print("Valor inicial do caixa R$", pcaixa)
+        inicial.close()
+    else:
+        inicial = open("Caixa.txt","r+")
+        pcaixa = inicial.read()
+        print("Valor inicial do caixa R$", pcaixa)
+        inicial.close()
     i = 0
+    total = 0
     ii = 1
     caixa = float(pcaixa)
+    print("Hoje é",datetime.today().strftime('%d-%m-%Y'))
     op = input("Qual a operação desejada? A = Abrir ou F = Fechar\nOperação: ")
     oper = op.upper()
     while oper != "A" and oper != "F":
@@ -30,7 +45,8 @@ while True:
                     ii = ii + 1
                     if venda == 34565621:
                         break
-                    caixa = caixa + venda
+                    total += venda
+                    caixa += venda
                 break
             else:
                 break
@@ -41,6 +57,23 @@ while True:
     caixa = str(caixa)
     final.write(caixa)
     final.close()
+    try:
+        fluxo = open("Fluxo.txt","x")
+        inicial.close()
+    except FileExistsError:
+        fluxo = open("Fluxo.txt","a")
+        fluxo.write(datetime.today().strftime('%d-%m-%Y'))
+        fluxo.write("\n")
+        fluxo.write(str(total))
+        fluxo.write("\n\n")
+        fluxo.close()
+    else:
+        fluxo = open("Fluxo.txt","a")
+        fluxo.write(datetime.today().strftime('%d-%m-%Y'))
+        fluxo.write("\n")
+        fluxo.write(str(total))
+        fluxo.write("\n\n")
+        fluxo.close()
     sleep(1)
     input("\n\nPressione qualquer tecla para fechar o programa...")
     break
